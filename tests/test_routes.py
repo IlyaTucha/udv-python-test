@@ -37,7 +37,7 @@ async def test_get_deleted_news_by_id(client):
     resp = await client.get("/news/102")
     assert resp.status == 404
     text = await resp.text()
-    assert text == "News not found"
+    assert text == "404: News not found"
 
 
 @pytest.mark.asyncio
@@ -46,4 +46,22 @@ async def test_get_nonexistent_news_by_id(client):
     resp = await client.get("/news/999")
     assert resp.status == 404
     text = await resp.text()
-    assert text == "News not found"
+    assert text == "404: News not found"
+
+
+@pytest.mark.asyncio
+async def test_get_news_by_negative_id(client):
+    """Тест на проверку получения новости с отрицательным ID"""
+    resp = await client.get("/news/-1")
+    assert resp.status == 404
+    text = await resp.text()
+    assert text == "404: News not found"
+
+
+@pytest.mark.asyncio
+async def test_get_news_by_invalid_id_format(client):
+    """Тест на проверку получения новости с неверным форматом ID (буквы вместо числа)"""
+    resp = await client.get("/news/abc")
+    assert resp.status == 404
+    text = await resp.text()
+    assert text == "404: News not found"
