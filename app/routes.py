@@ -1,6 +1,7 @@
 from aiohttp import web
 from .models import NewsData, CommentsData
 from .utils import group_comments_by_news_id
+import logging
 
 routes = web.RouteTableDef()
 
@@ -26,7 +27,8 @@ async def get_news_list(request) -> web.Response:
 
         return web.json_response({"news": active_news, "news_count": len(active_news)})
     except Exception as e:
-        return web.Response(status=500, text=f"500: Error processing data: {str(e)}")
+        logging.error(f"Error processing data: {str(e)}")
+        return web.Response(status=500, text="Internal Server Error")
 
 
 @routes.get("/news/{news_id}")
@@ -59,4 +61,5 @@ async def get_news_by_id(request) -> web.Response:
 
         return web.json_response(news_details)
     except Exception as e:
-        return web.Response(status=500, text=f"500: Error processing data: {str(e)}")
+        logging.error(f"Error processing data: {str(e)}")
+        return web.Response(status=500, text="Internal Server Error")
